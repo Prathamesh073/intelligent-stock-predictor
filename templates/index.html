@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Stock Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        
+        /* The Serif Font you wanted */
+        .serif-heading { 
+            font-family: 'Playfair Display', serif; 
+        }
+
+        .glass { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to r, #34d399, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-black italic serif-heading gradient-text uppercase tracking-tight">
+                Intelligent Stock Predictor
+            </h1>
+            <p class="text-slate-500 text-xs font-bold tracking-[0.3em] mt-2 uppercase">Advanced AI Analysis System</p>
+        </div>
+
+        <div class="flex justify-center mb-10">
+            <form action="/predict" method="post" class="flex gap-2 bg-slate-800 p-2 rounded-2xl w-full max-w-lg border border-slate-700 shadow-xl">
+                <input type="text" name="symbol" placeholder="Enter Symbol (e.g. TCS, INFY, AAPL)" 
+                       class="bg-transparent border-none focus:ring-0 text-white flex-1 px-4 outline-none uppercase font-semibold">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg">
+                    Analyze
+                </button>
+            </form>
+        </div>
+
+        {% if price %}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-4 space-y-4">
+                <div class="glass p-6 rounded-3xl shadow-2xl">
+                    <h2 class="text-slate-400 text-xs font-bold uppercase mb-1 tracking-widest">Selected Ticker</h2>
+                    <div class="text-5xl font-black mb-6 serif-heading italic">{{symbol}}</div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-2xl border border-slate-700">
+                            <span class="text-slate-400 text-sm font-semibold">LTP</span>
+                            <span class="text-2xl font-mono font-bold text-white">₹{{price}}</span>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20">
+                            <div>
+                                <span class="text-emerald-500 text-[10px] font-bold uppercase block">AI Forecast</span>
+                                <span class="text-slate-300 text-sm font-semibold">Expected Price</span>
+                            </div>
+                            <span class="text-2xl font-mono font-bold text-emerald-400">₹{{expected_price}}</span>
+                        </div>
+
+                        <div class="py-6 rounded-2xl text-center shadow-inner {{ 'bg-emerald-500/20 border border-emerald-500/40' if 'BUY' in recommendation else 'bg-rose-500/20 border border-rose-500/40' if 'SELL' in recommendation else 'bg-amber-500/20' }}">
+                            <span class="text-slate-400 text-xs font-bold block mb-1">AI SIGNAL</span>
+                            <span class="text-4xl font-black serif-heading italic {{ 'text-emerald-400' if 'BUY' in recommendation else 'text-rose-400' if 'SELL' in recommendation else 'text-amber-400' }}">
+                                {{recommendation}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-slate-900/50 rounded-2xl border border-slate-700">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2 font-bold tracking-widest">
+                            <span>RSI (14)</span>
+                            <span>{{rsi}}</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: {{rsi}}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8">
+                <div class="glass p-2 rounded-3xl shadow-2xl h-[550px] overflow-hidden">
+                    <iframe 
+                        src="https://s.tradingview.com/widgetembed/?symbol={{chart_symbol}}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=1e293b&theme=dark&style=1&timezone=Etc%2FUTC&locale=en" 
+                        style="width: 100%; height: 100%; border: none;">
+                    </iframe>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
